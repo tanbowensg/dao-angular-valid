@@ -20,6 +20,14 @@ angular.module('Validation', [
       }
     }
 
+    obj.strategy.onlyA1_ = {
+      msg: "只能包含中文、英文、数字、下划线",
+      validate: function(str) {
+        var regex = new RegExp("^[\u4E00-\u9FA5A-Za-z0-9_]+$")
+        return regex.test(str)
+      }
+    }
+
     /**
      * @param  {[str]}
      * @param  {[array]} 验证方法名的数组
@@ -27,44 +35,63 @@ angular.module('Validation', [
      */
     
     obj.validate=function(data) {
-      return new Promise(function(resolve,reject){
-        console.log("promise")
-        var result = true
-        var validator,i,j
-        var msg = {}
+      var result = true
+      var validator,i,j
+      var msg = {}
 
-        for (i = 0; i < data.length ; i++) {
-          
-          for (j = data[i].validators.length - 1; j >= 0; j--) {
+      for (i = 0; i < data.length ; i++) {
+        
+        for (j = data[i].validators.length - 1; j >= 0; j--) {
 
-            try {
-              validator = obj.strategy[data[i].validators[j]].validate
-            } catch (e) {
-              console.warn('no validator called' + data[i].validators[j])
-              return false
-            }
+          try {
+            validator = obj.strategy[data[i].validators[j]].validate
+          } catch (e) {
+            console.warn('no validator called' + data[i].validators[j])
+            return false
+          }
 
-            if (validator(data[i].value)) {
-              continue
-            } else {
-              result = false
-              msg[data[i].key]=[]
-              msg[data[i].key].push(data[i].name + obj.strategy[data[i].validators[j]].msg)
-            }
+          if (validator(data[i].value)) {
+            continue
+          } else {
+            result = false
+            msg[data[i].key]=[]
+            msg[data[i].key].push(data[i].name + obj.strategy[data[i].validators[j]].msg)
           }
         }
+      }
 
-        if (!result) {
-          reject({
-            result: result,
-            msg: msg
-          })
+      if (!result) {
+        obj.result={
+          valid: result,
+          msg: msg
         }
+      }
 
-        if (result) {
-          resolve("valid!")
+      if (result) {
+        obj.result={
+          valid: result,
         }
-      })
+      }
+
+      return obj
+    }
+
+    obj.success=function(success){
+      if(obj.result.valid){
+        if(success){
+          success(obj.result)
+        }
+      }
+      return obj
+    }
+
+    obj.fail=function(fail){
+      if(!obj.result.valid){
+        if(fail){
+          fail(obj.result)
+        }
+      }
+      return obj
     }
 
     return obj.validate
