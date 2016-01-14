@@ -32,7 +32,7 @@ valid callback response:
 	{
 		result: false,
 		msg:{
-			mydata:["can not be empty","must be IPv4"]
-			mydata2:["can not be empty"]
+			mydata:["DisplayName can not be empty"," DisplayName must be IPv4"]
+			mydata2:["DisplayName2 can not be empty"]
 		}
 	}	
