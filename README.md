@@ -17,9 +17,10 @@ A form-validation service for angular
 			validators:['matchNotEmpty']
 		},
 	])
-	.then(function(res){
+	.success(function(res){
 	    //valid callback
-	},function(rej){
+	})
+	.fail(function(rej){
 	    //invalid callback
 	})
 	
@@ -32,7 +33,7 @@ valid callback response:
 	{
 		result: false,
 		msg:{
-			mydata:["DisplayName can not be empty"," DisplayName must be IPv4"]
+			mydata:["DisplayName can not be empty"," DisplayNamemust be IPv4"]
 			mydata2:["DisplayName2 can not be empty"]
 		}
 	}	
