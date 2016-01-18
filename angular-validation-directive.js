@@ -89,42 +89,27 @@ angular.module('myapp')
       displayName:"@myValidName",
       rule:"@myValidRule",
       value:"=ngModel",
-      // valid:"=",
-      // typed:"=",
-      // invalidMsg:"=",
     },
-    // controller: function($scope, $element, $attrs, $transclude) {
-    //   console.log("dirscope",$scope)
-    //   $scope.$watch("value",function(){
-    //     console.log($scope.displayName)
-    //     console.log("dirscope",$scope)
-    //   })
-    // },
     // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
     // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
-    // template: '',
-    // templateUrl: '',
     // replace: true,
     // transclude: true,
     // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
     link: function($scope, ele, attrs, controller) {
       console.log("watcgdirscope",$scope)
 
-      var html='<span\
-        class="text-danger" \
-        ng-show="!valid && typed" \
-        style="line-height: 31px; margin-left: 10px;"> \
-        {{invalidMsg}}\
-      </span>'
+      var parent=ele[0].parentElement
+      var alert=document.createElement("span")
+      alert.innerHTML="wrong!"
 
       $scope.valid=true
       $scope.typed=false
       $scope.invalidMsg=[]
 
       $scope.$watch("value",function(){
-        $scope.typed=false
         console.log($scope.displayName)
         console.log("watchdirscope",$scope)
+
         validation([{
           name:$scope.displayName,
           key:"key",
@@ -133,10 +118,16 @@ angular.module('myapp')
         }])
         .then(function(res){
           console.log('valid',res)
+          parent.removeChild(alert)
         },function(rej){
-          $scope.valid=false
-          $scope.invalidMsg=rej.msg.key[0]
-          $(ele).parent().append(html)
+          if($scope.typed){
+            $scope.valid=false
+            $scope.invalidMsg=rej.msg.key[0]
+            alert.innerHTML=$scope.invalidMsg
+            parent.appendChild(alert)
+          } else {
+            $scope.typed=true
+          }
         })
       })
     }

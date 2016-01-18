@@ -8,6 +8,6 @@
 	<script src="angular-validation-directive.js"></script>
 </head>
 <body ng-app="myapp">
-	<my-valid></my-valid>
+	<input my-valid ng-model="value" my-valid-name="测试" my-valid-rule="matchIPv4,onlyA1_,matchNotEmpty">
 </body>
 </html>
