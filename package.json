@@ -1,0 +1,27 @@
+{
+  "name": "dao-valid-angular",
+  "version": "1.0.0",
+  "description": "form validation for angular",
+  "main": "angular-validation-directive.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tanbowensg/angular-form-validation.git"
+  },
+  "keywords": [
+    "angular",
+    "form",
+    "valid"
+  ],
+  "author": "tanbowensg@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tanbowensg/angular-form-validation/issues"
+  },
+  "homepage": "https://github.com/tanbowensg/angular-form-validation#readme",
+  "dependencies": {
+    "angular": "^1.4.8"
+  }
+}
