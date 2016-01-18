@@ -1,55 +1,47 @@
 angular.module('myapp')
-.directive('myValid', [ function(){
-  var validation=validFactory()
+  .directive('daoValid', [function() {
+    var validate = ValidateFactory()
 
-  function validFactory() {
-    var obj={}
-    // simple domain pattern
-    obj.strategy = {}
-    obj.strategy.domainPattern = "/(^(?:\w+\.)+(?:[\w\/]+)$)/"
-
-    obj.strategy.matchNotEmpty = {
-      msg: "不能为空",
-      validate: function(str) {
-        return str !== undefined && str.trim() !== ''
+    function ValidateFactory() {
+      var obj = {}
+      // Validation Rules Here--------------------------------------
+      obj.rule = {}
+      
+      obj.rule.notEmpty = {
+        msg: " can not be empty.",
+        validate: function(str) {
+          return str !== undefined && str.trim() !== ''
+        }
       }
-    }
 
-    obj.strategy.matchIPv4 = {
-      msg: "必须是IPv4",
-      validate: function(str) {
-        var ipv4Regex = new RegExp("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
-        return ipv4Regex.test(str)
+      obj.rule.ipv4 = {
+        msg: " must be IPv4",
+        validate: function(str) {
+          var ipv4Regex = new RegExp("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+          return ipv4Regex.test(str)
+        }
       }
-    }
 
-    obj.strategy.onlyA1_ = {
-      msg: "只能包含中文、英文、数字、下划线",
-      validate: function(str) {
-        var regex = new RegExp("^[\u4E00-\u9FA5A-Za-z0-9_]+$")
-        return regex.test(str)
-      }
-    }
+      obj.rule.onlyA1_ = {
+          msg: " only accept a-b, A-b, 0-9, and '_'.",
+          validate: function(str) {
+            var regex = new RegExp("^[\u4E00-\u9FA5A-Za-z0-9_]+$")
+            return regex.test(str)
+          }
+        }
+        // Validation Rules End----------------------------------------
 
-    /**
-     * @param  {[str]}
-     * @param  {[array]} 验证方法名的数组
-     * @return {[bool]}
-     */
-    
-    obj.validate=function(data) {
-      return new Promise(function(resolve,reject){
-        console.log("promise")
+      obj.validate = function(data) {
         var result = true
-        var validator,i,j
+        var validator, i, j
         var msg = {}
-        console.log("data",data)
-        for (i = 0; i < data.length ; i++) {
-          
+
+        for (i = 0; i < data.length; i++) {
+
           for (j = data[i].validators.length - 1; j >= 0; j--) {
 
             try {
-              validator = obj.strategy[data[i].validators[j]].validate
+              validator = obj.rule[data[i].validators[j]].validate
             } catch (e) {
               console.warn('no validator called' + data[i].validators[j])
               return false
@@ -59,77 +51,84 @@ angular.module('myapp')
               continue
             } else {
               result = false
-              msg[data[i].key]=[]
-              msg[data[i].key].push(data[i].name + obj.strategy[data[i].validators[j]].msg)
+              msg[data[i].key] = []
+              msg[data[i].key].push(data[i].name + obj.rule[data[i].validators[j]].msg)
             }
           }
         }
 
         if (!result) {
-          reject({
-            result: result,
+          obj.result = {
+            valid: result,
             msg: msg
-          })
+          }
         }
 
         if (result) {
-          resolve("valid!")
-        }
-      })
-    }
-
-    return obj.validate
-  }
-
-  return {
-    // name: '',
-    // priority: 1,
-    // terminal: true,
-    scope: {
-      displayName:"@myValidName",
-      rule:"@myValidRule",
-      value:"=ngModel",
-    },
-    // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-    // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
-    // replace: true,
-    // transclude: true,
-    // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
-    link: function($scope, ele, attrs, controller) {
-      console.log("watcgdirscope",$scope)
-
-      var parent=ele[0].parentElement
-      var alert=document.createElement("span")
-      alert.innerHTML="wrong!"
-
-      $scope.valid=true
-      $scope.typed=false
-      $scope.invalidMsg=[]
-
-      $scope.$watch("value",function(){
-        console.log($scope.displayName)
-        console.log("watchdirscope",$scope)
-
-        validation([{
-          name:$scope.displayName,
-          key:"key",
-          value:$scope.value,
-          validators:$scope.rule.split(',')
-        }])
-        .then(function(res){
-          console.log('valid',res)
-          parent.removeChild(alert)
-        },function(rej){
-          if($scope.typed){
-            $scope.valid=false
-            $scope.invalidMsg=rej.msg.key[0]
-            alert.innerHTML=$scope.invalidMsg
-            parent.appendChild(alert)
-          } else {
-            $scope.typed=true
+          obj.result = {
+            valid: result,
           }
-        })
-      })
+        }
+
+        return obj
+      }
+
+      obj.success = function(success) {
+        if (obj.result.valid) {
+          if (success) {
+            success(obj.result)
+          }
+        }
+        return obj
+      }
+
+      obj.fail = function(fail) {
+        if (!obj.result.valid) {
+          if (fail) {
+            fail(obj.result)
+          }
+        }
+        return obj
+      }
+
+      return obj.validate
     }
-  };
-}]);
+
+    return {
+      scope: {
+        name: "@daoValidName",
+        rule: "@daoValidRule",
+        value: "=ngModel",
+        valid: "=daoValidToggle",
+      },
+      link: function($scope, ele) {
+        var parent = ele[0].parentElement
+        var alert = document.createElement("span")
+
+        $scope.valid = false
+        $scope.typed = false
+
+        $scope.$watch("value", function() {
+          validate([{
+            name: $scope.name,
+            key: "key",
+            value: $scope.value,
+            validators: $scope.rule.split(',')
+          }])
+          .success(function(res) {
+            $scope.valid = true
+            parent.removeChild(alert)
+          })
+          .fail(function(rej) {
+            if ($scope.typed) {
+              $scope.valid = false
+              alert.innerHTML = rej.msg.key[0]
+              parent.appendChild(alert)
+            } else {
+              $scope.typed = true
+            }
+          })
+        })
+      }
+    };
+  }]);

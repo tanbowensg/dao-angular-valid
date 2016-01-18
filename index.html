@@ -8,6 +8,32 @@
 	<script src="angular-validation-directive.js"></script>
 </head>
 <body ng-app="myapp">
-	<input my-valid ng-model="value" my-valid-name="测试" my-valid-rule="matchIPv4,onlyA1_,matchNotEmpty">
+	<input 
+        class="form-control" type="text" 
+        ng-model="name1" 
+        dao-valid
+        dao-valid-toggle="toggle1"
+        dao-valid-rule="notEmpty,ipv4"
+        dao-valid-name="集群名"
+        placeholder="给集群起一个名字..." 
+        autofocus>
+  	<input 
+        class="form-control" type="text" 
+        ng-model="name2" 
+        dao-valid
+        dao-valid-toggle="toggle2"
+        dao-valid-rule="notEmpty,ipv4"
+        dao-valid-name="集群名"
+        placeholder="给集群起一个名字..." 
+        autofocus>
+   	<input 
+        class="form-control" type="text" 
+        ng-model="name3" 
+        dao-valid
+        dao-valid-toggle="toggle3"
+        dao-valid-rule="notEmpty,ipv4"
+        dao-valid-name="集群名"
+        placeholder="给集群起一个名字..." 
+        autofocus>
 </body>
 </html>
