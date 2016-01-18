@@ -9,8 +9,8 @@ Angular
 ##Features
 
 - Easy to use
-- Reusable rules
-- Valiate by multiple rules
+- Custom and reusable rules
+- Validate by multiple rules
 
 
 ##Usage

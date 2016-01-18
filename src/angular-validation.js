@@ -1,5 +1,5 @@
-angular.module('daoValid', [
-  'DaoValidRules',
+angular.module('daoValidAngular')
+.factory('daoValidService', ['DaoValidRules',
   function(DaoValidRules) {
     var obj = {}
    
