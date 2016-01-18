@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
-	<script src="node_modules/angular/angular.js"></script>
-	<script src="src/js.js"></script>
-	<script src="src/angular-validation-rules.js"></script>
-	<script src="src/angular-validation-directive.js"></script>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="src/js.js"></script>
+    <script src="src/angular-validation-rules.js"></script>
+    <script src="src/angular-validation-directive.js"></script>
 </head>
 <body ng-app="myapp">
-	<input 
-        class="form-control" type="text" 
-        ng-model="name1" 
-        dao-valid
-        dao-valid-toggle="toggle1"
-        dao-valid-rule="notEmpty,ipv4"
-        dao-valid-name="集群名"
-        placeholder="给集群起一个名字..." 
-        autofocus>
-  	<input 
-        class="form-control" type="text" 
-        ng-model="name2" 
-        dao-valid
-        dao-valid-toggle="toggle2"
-        dao-valid-rule="notEmpty,ipv4"
-        dao-valid-name="集群名"
-        placeholder="给集群起一个名字..." 
-        autofocus>
-   	<input 
-        class="form-control" type="text" 
-        ng-model="name3" 
-        dao-valid
-        dao-valid-toggle="toggle3"
-        dao-valid-rule="notEmpty,ipv4"
-        dao-valid-name="集群名"
-        placeholder="给集群起一个名字..." 
-        autofocus>
+    <div>
+        <label>URL</label>
+        <input 
+            type="text" 
+            ng-model="url" 
+            dao-valid
+            dao-valid-toggle="URLIsValid"
+            dao-valid-rule="notEmpty,url"
+            dao-valid-name="URL"
+            placeholder="http://www.google.com" 
+            autofocus>
+    </div>
+    <div>
+        <label>IP address</label>
+        <input 
+            type="text" 
+            ng-model="ip" 
+            dao-valid
+            dao-valid-toggle="IPIsValid"
+            dao-valid-rule="notEmpty,ipv4"
+            dao-valid-name="IP address"
+            placeholder="192.168.1.1" 
+            autofocus>
+    </div>
+    <button
+        ng-disabled="!URLIsValid">
+        Submit URL
+    </button>
+    <button
+        ng-disabled="!IPIsValid">
+        Submit IP
+    </button>
 </body>
 </html>
