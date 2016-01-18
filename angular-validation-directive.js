@@ -1,35 +1,9 @@
 angular.module('myapp')
-.directive('daoValid', [function() {
+.directive('daoValid', ['DaoValidRules',function(DaoValidRules) {
   var validate = ValidateFactory()
 
   function ValidateFactory() {
     var obj = {}
-    // Validation Rules Here--------------------------------------
-    obj.rule = {}
-
-    obj.rule.notEmpty = {
-      msg: " can not be empty.",
-      validate: function(str) {
-        return str !== undefined && str.trim() !== ''
-      }
-    }
-
-    obj.rule.ipv4 = {
-      msg: " must be IPv4",
-      validate: function(str) {
-        var ipv4Regex = new RegExp("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
-        return ipv4Regex.test(str)
-      }
-    }
-
-    obj.rule.onlyA1_ = {
-        msg: " only accept a-b, A-b, 0-9, and '_'.",
-        validate: function(str) {
-          var regex = new RegExp("^[\u4E00-\u9FA5A-Za-z0-9_]+$")
-          return regex.test(str)
-        }
-      }
-      // Validation Rules End----------------------------------------
 
     obj.validate = function(data) {
       var result = true
@@ -41,7 +15,7 @@ angular.module('myapp')
         for (j = data[i].validators.length - 1; j >= 0; j--) {
 
           try {
-            validator = obj.rule[data[i].validators[j]].validate
+            validator = DaoValidRules[data[i].validators[j]].validate
           } catch (e) {
             console.warn('no validator called' + data[i].validators[j])
             return false
@@ -52,7 +26,7 @@ angular.module('myapp')
           } else {
             result = false
             msg[data[i].key] = []
-            msg[data[i].key].push(data[i].name + obj.rule[data[i].validators[j]].msg)
+            msg[data[i].key].push(data[i].name + DaoValidRules[data[i].validators[j]].msg)
           }
         }
       }
@@ -130,4 +104,4 @@ angular.module('myapp')
       })
     }
   };
-}]);
+}])

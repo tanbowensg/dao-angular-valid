@@ -76,19 +76,16 @@ valid callback response:
 
 ###Custom Rules
 
-Just find obj.rule in source code and add an object to it like this:
+Just modify angular-validation-rules.js like this:
+
+	var rules={}
 
 	// Validation Rules Here--------------------------------------
-	
-    obj.rule = {}
-    
-	obj.rule.notEmpty = {
-	  //this is the invalid message
-	  msg: " can not be empty.",
-	  
-	  //validate funtion should return true or false
-	  validate: function(str) {
-	    return str !== undefined && str.trim() !== ''
-	  }
-	}
+    rules.notEmpty = {
+      msg: " can not be empty.",
+      //the validate function should return true or false
+      validate: function(str) {
+        return str !== undefined && str.trim() !== ''
+      }
+    }
 	

@@ -1,33 +1,8 @@
 angular.module('daoValid', [
-  function() {
+  'DaoValidRules',
+  function(DaoValidRules) {
     var obj = {}
-      // Validation Rules Here--------------------------------------
-    obj.rule = {}
-    obj.rule.domainPattern = "/(^(?:\w+\.)+(?:[\w\/]+)$)/"
-
-    obj.rule.matchNotEmpty = {
-      msg: "不能为空",
-      validate: function(str) {
-        return str !== undefined && str.trim() !== ''
-      }
-    }
-
-    obj.rule.matchIPv4 = {
-      msg: "必须是IPv4",
-      validate: function(str) {
-        var ipv4Regex = new RegExp("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
-        return ipv4Regex.test(str)
-      }
-    }
-
-    obj.rule.onlyA1_ = {
-        msg: "只能包含中文、英文、数字、下划线",
-        validate: function(str) {
-          var regex = new RegExp("^[\u4E00-\u9FA5A-Za-z0-9_]+$")
-          return regex.test(str)
-        }
-      }
-      // Validation Rules End--------------------------------------
+   
     obj.validate = function(data) {
       var result = true
       var validator, i, j
@@ -38,7 +13,7 @@ angular.module('daoValid', [
         for (j = data[i].validators.length - 1; j >= 0; j--) {
 
           try {
-            validator = obj.rule[data[i].validators[j]].validate
+            validator = DaoValidRules[data[i].validators[j]].validate
           } catch (e) {
             console.warn('no validator called' + data[i].validators[j])
             return false
@@ -49,7 +24,7 @@ angular.module('daoValid', [
           } else {
             result = false
             msg[data[i].key] = []
-            msg[data[i].key].push(data[i].name + obj.rule[data[i].validators[j]].msg)
+            msg[data[i].key].push(data[i].name + DaoValidRules[data[i].validators[j]].msg)
           }
         }
       }
