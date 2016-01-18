@@ -2,7 +2,18 @@
 
 A form-validation plugin for angular
 
-#Usage
+##Dependency
+
+Angular
+
+##Features
+
+- Easy to use
+- Reusable rules
+- Valiate by multiple rules
+
+
+##Usage
 
 If you just want to simply show invalid message and toggle submit button, the directive version is enough and convenient. 
 
