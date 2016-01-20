@@ -1,5 +1,5 @@
 angular.module('daoValidAngular')
-.directive('daoValid',['DaoValidRules',
+.directive('daoValidOld',['DaoValidRules',
   function(DaoValidRules) {
     var validate = ValidateFactory()
 
@@ -107,7 +107,7 @@ angular.module('daoValidAngular')
     };
 }])
 
-.directive('daoValidSync', ['DaoValidRules',function(DaoValidRules) {
+.directive('daoValid', ['DaoValidRules',function(DaoValidRules) {
   var validate = ValidateFactory()
 
   function ValidateFactory() {
@@ -119,18 +119,14 @@ angular.module('daoValidAngular')
     }
 
     obj.asyncValidate = function(data,validator,success,fail){
-      console.log("obj.result",obj.result)
       window.strange=obj.result
       validator.validate(
         data.value,
         function(){
           //success callback
-          console.log("obj.result",obj.result)
           if (obj.result.valid===true&&success) {
             success(obj.result)
           }
-          console.log("obj.result",obj.result)
-          console.log("asynctture")
         },
         function(){
           obj.result.valid=false
@@ -140,7 +136,6 @@ angular.module('daoValidAngular')
           if (fail) {
             fail(obj.result)
           }
-          console.log("asyncfalse")
         })
     }
 
@@ -179,7 +174,6 @@ angular.module('daoValidAngular')
             obj.result.msg[data[i].key]=""
           } else {
             obj.result.valid = false
-            console.log(data[i].validators[j],"是false")
             obj.result.msg[data[i].key]=data[i].name + DaoValidRules[data[i].validators[j]].msg
             break
           }
@@ -212,13 +206,11 @@ angular.module('daoValidAngular')
             value: $scope.value,
             validators: $scope.rule.split(',')
           }], function(res) {
-            console.log("runsuccescallback")
             try {
               parent.removeChild(alert)
             } catch (e) {}
             $scope.valid = true
           }, function(rej) {
-            console.log("runfailcallback")
             if (ele[0].className.indexOf("ng-dirty") !== -1) {
               $scope.valid = false
               alert.innerHTML = rej.msg.key

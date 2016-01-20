@@ -17,7 +17,7 @@ Angular
 
 If you just want to simply show invalid message and toggle submit button, the directive version is enough and convenient. 
 
-If you need add custom success or failure callback function, you can use service version.
+If you need add custom success or failure callback function, you can use service version(not ready now).
 
 ###Directive Version
 
@@ -37,7 +37,44 @@ If you need add custom success or failure callback function, you can use service
         dao-valid-name="IP Address"
     >
 
-###Service Version
+###Custom Rules
+
+Just modify angular-validation-rules.js like this:
+
+	var rules={}
+
+	// Validation Rules Here--------------------------------------
+    rules.notEmpty = {
+      msg: " can not be empty.",
+      
+      //the validate function should return true or false
+      validate: function(str) {
+        return str !== undefined && str.trim() !== ''
+      }
+    }
+
+Async custom rules are different:
+
+	rules.uniqueName = {
+	  msg: "already exists.",
+	  
+	  // must add an "async" property and set it true to tell the directive this is an async function.
+	  async:true,
+	  
+	  // instead of return true or false, you should pass 2 callbacks, success for valid, fail for invalid.
+	  validate: function(str,success,fail) {
+	    checkNamePromise(str)
+	      .then(function(res){
+	        if(res.data==='OK'){
+	          success()
+	        } else {
+	          fail()
+	        }
+	      })
+	  }
+	}
+
+###Service Version(not ready)
 
 	Validation([
 	    {
@@ -73,19 +110,3 @@ valid callback response:
 			mydata2:["DisplayName2 can not be empty"]
 		}
 	}	
-
-###Custom Rules
-
-Just modify angular-validation-rules.js like this:
-
-	var rules={}
-
-	// Validation Rules Here--------------------------------------
-    rules.notEmpty = {
-      msg: " can not be empty.",
-      //the validate function should return true or false
-      validate: function(str) {
-        return str !== undefined && str.trim() !== ''
-      }
-    }
-	
