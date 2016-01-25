@@ -20,7 +20,13 @@ Unknown. Only tested in Angular 1.3.15 with Chrome.
 
 ## Install
 
-1. Run "gulp" to build.
+1. Import "dao-angular-valid.js" to your project.
+2. Inject dao-valid to your APP.
+
+		angular.module('yourAPP',["daoValidAngular"])
+		
+3. Complete!
+
 
 ## Usage
 
@@ -49,21 +55,29 @@ If you need add custom success or failure callback function, you can use service
 
 ###Custom Rules
 
-Just modify angular-validation-rules.js like this:
+Just modify angular-validation-rules.js. 
 
-	// Validation Rules Here--------------------------------------
+And then Run "gulp" to build.
+
+Or just modify 'DaoValidRules' in "dao-angular-valid.js" like this:
+
+	.factory('DaoValidRules', function() {
 	
-    rules.notEmpty = {
-    
-      //The wrong message which will display when the input fails to pass the validation.
-      msg: " can not be empty.",
-      
-      //the validate function should return true or false
-      validate: function(str) {
-        return str !== undefined && str.trim() !== ''
-      }
-      
-    }
+		var rules={}
+		
+		// Validation Rules Here--------------------------------------
+	    rules.notEmpty = {
+	    
+	      //The wrong message which will display when the input fails to pass the validation.
+	      msg: " can not be empty.",
+	      
+	      //the validate function should return true or false
+	      validate: function(str) {
+	        return str !== undefined && str.trim() !== ''
+	      }
+	      
+	    }
+	}
 
 Async rules are different. They must return a Promise object. Like this: 
 
