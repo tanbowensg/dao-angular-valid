@@ -1,39 +1,49 @@
 # DaoValid for Angular
 
-A form-validation plugin for angular
+An input-validation plugin for Angular.
 
-##Dependency
+## Dependency
 
-Angular
+Angular.
 
-##Features
+## Compatibility
 
-- Easy to use
-- Custom and reusable rules
-- Validate by multiple rules
+Unknown. Only tested in Angular 1.3.15 with Chrome.
+
+## Features
+
+- Reusable rules
+- Easy to define your own rules
+- Support multiple-rule-validation
+- Support async-rule-validation
 
 
-##Usage
+## Install
+
+1. Run "gulp" to build.
+
+## Usage
+
 
 If you just want to simply show invalid message and toggle submit button, the directive version is enough and convenient. 
 
 If you need add custom success or failure callback function, you can use service version(not ready now).
 
-###Directive Version
+### Directive Version
 
 	<input 
-		//the value you want to check
+		// The value you want to validate.
         ng-model="ctrl.ip" 
         
         dao-valid
         
-        //a boolean value to show whether the value is valid, this should be binded to the param which can disables the submit button 
+        // A boolean value to show whether the value is valid, this should be binded to the param which can disable the submit button.
         dao-valid-toggle="disabled"
         
-        //mutiple rules should be divided by comma
+        // The rules you want to apply on this input. Muutiple rules should be divided by comma.
         dao-valid-rule="notEmpty,ipv4"
         
-        //the name which will display in the wrong message
+        // The name which will display in the wrong message.
         dao-valid-name="IP Address"
     >
 
@@ -41,40 +51,64 @@ If you need add custom success or failure callback function, you can use service
 
 Just modify angular-validation-rules.js like this:
 
-	var rules={}
-
 	// Validation Rules Here--------------------------------------
+	
     rules.notEmpty = {
+    
+      //The wrong message which will display when the input fails to pass the validation.
       msg: " can not be empty.",
       
       //the validate function should return true or false
       validate: function(str) {
         return str !== undefined && str.trim() !== ''
       }
+      
     }
 
-Async custom rules are different:
+Async rules are different. They must return a Promise object. Like this: 
 
-	rules.uniqueName = {
-	  msg: "already exists.",
-	  
-	  // must add an "async" property and set it true to tell the directive this is an async function.
-	  async:true,
-	  
-	  // instead of return true or false, you should pass 2 callbacks, success for valid, fail for invalid.
-	  validate: function(str,success,fail) {
-	    checkNamePromise(str)
-	      .then(function(res){
-	        if(res.data==='OK'){
-	          success()
-	        } else {
-	          fail()
-	        }
-	      })
-	  }
-	}
+	 rules.uniqueName = {
+	   msg: " already exists.",
+	
+	   // Must add an "async" property and set it true to tell the directive this is an async function.
+	   async:true,
+	   
+	   // instead of return true or false, you should pass 2 callbacks, success for valid, fail for invalid.
+	   validate: function(str) {
+	   
+	     var that=this
+	 
+	     // Must return a Promise
+	     return new Promise(function(resolve,reject){
+	     
+	       //Maybe some xhr here.
+	       checkName(str,function(res){
+	
+	         if(res==='OK'){
+	         
+	           // If the input passes the validation, you should resolve an object like this.
+	           resolve({
+	             valid:true,
+	             str:str
+	           })
+	           
+	         } else {
+	         
+	           // If it fails, you also need resolve an object.
+	           resolve({
+	             valid:false,
+	             msg:that.msg
+	           })
+	           
+	         }
+	
+	       })
+	       
+	     })
+	   }
+	 }
 
-###Service Version(not ready)
+###Service Version(currently not ready)
 
 	Validation([
 	    {
