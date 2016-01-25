@@ -8,36 +8,24 @@
 </head>
 <body ng-app="daoValidAngular">
     <div>
-        <label>URL</label>
-        <input 
-            type="text" 
-            ng-model="url" 
-            dao-valid
-            dao-valid-toggle="URLIsValid"
-            dao-valid-rule="notEmpty,url"
-            dao-valid-name="URL"
-            placeholder="http://www.google.com" 
-            autofocus>
-    </div>
-    <div>
-        <label>IP address</label>
+        <p>An input can be validated by multiple rules.</p>
+        <p>The rules for Example Input are <b>"notEmpty,ipv4,asyncURL,asyncipv4". </b></p>
+        <p>The input will be strictly validated by theses rules in order.</p>
+        <p>If the input didn't pass the previous rules, the validation will stop and the rest rules will not be excuted.</p>
+        <label>Example Input</label>
         <input 
             type="text" 
             ng-model="ip" 
             dao-valid
             dao-valid-toggle="IPIsValid"
-            dao-valid-rule="notEmpty,ipv4"
+            dao-valid-rule="notEmpty,ipv4,asyncURL,asyncipv4"
             dao-valid-name="IP address"
             placeholder="192.168.1.1" 
             autofocus>
     </div>
     <button
-        ng-disabled="!URLIsValid">
-        Submit URL
-    </button>
-    <button
         ng-disabled="!IPIsValid">
-        Submit IP
+        Submit Input
     </button>
 </body>
 </html>
