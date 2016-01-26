@@ -261,15 +261,15 @@ angular.module('daodaodao',["daoValidAngular"])
     },
     link: function($scope, ele) {
       var parent = ele[0].parentElement
+      var input = ele[0]
       var alert = document.createElement("span")
-      //dirty用来判断用户是否输入过。
-      var dirty = 0
+
       alert.className = "text-danger"
 
       $scope.valid = false
 
       $scope.$watch("value", function() {
-        dirty++
+
         $scope.valid = false
 
         validate({
@@ -289,7 +289,7 @@ angular.module('daodaodao',["daoValidAngular"])
 
         }, function(rej) {
 
-          if (dirty>=2) {
+          if (input.className.indexOf("ng-dirty") !== -1 ) {
 
             $scope.valid = false
             alert.innerHTML = rej.msg.key
