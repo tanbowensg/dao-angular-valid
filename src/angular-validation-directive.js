@@ -125,7 +125,7 @@
       obj.syncValidate(data)
 
       //仅当同步验证通过时，才会继续异步验证
-      if (obj.result.valid) {
+      if (obj.result.valid && obj.aValidators.length > 0) {
 
         obj.asyncValidate(data, function() {
 
