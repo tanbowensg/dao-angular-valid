@@ -51,6 +51,9 @@ If you need add custom success or failure callback function, you can use service
         
         // The name which will display in the wrong message.
         dao-valid-name="IP Address"
+
+        // Some other value you may need in validation which will be passed to the validation function.
+        dao-valid-option="{id:1234}"
     >
 
 ###Custom Rules
@@ -70,9 +73,12 @@ Or just modify 'DaoValidRules' in "dao-angular-valid.js" like this:
 	    
 	      //The wrong message which will display when the input fails to pass the validation.
 	      msg: " can not be empty.",
-	      
-	      //the validate function should return true or false
-	      validate: function(str) {
+
+
+	      // str is the value you want to check, option is an object you set in dao-valid-option.
+	      validate: function(str, option) {
+	      	
+		    //the validate function should return true or false
 	        return str !== undefined && str.trim() !== ''
 	      }
 	      

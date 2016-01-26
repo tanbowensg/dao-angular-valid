@@ -42,7 +42,6 @@
       return new Promise(function(resolve, reject) {
 
         setTimeout(function() {
-
           if (urlRegex.test(str)) {
             resolve({
               valid: true,
@@ -60,6 +59,35 @@
       })
     }
   }
+
+  rules.notOption = {
+    msg: " cannot be 12345. (async)",
+    async: true,
+    validate: function(str, option) {
+      var that = this
+
+      return new Promise(function(resolve, reject) {
+
+        setTimeout(function() {
+          console.log("额外的参数！",option)
+          if (str!==option.text) {
+            resolve({
+              valid: true,
+              str: str
+            })
+          } else {
+            resolve({
+              valid: false,
+              msg: that.msg
+            })
+          }
+
+        })
+
+      })
+    }
+  }
+  
 
   rules.asyncipv4 = {
     msg: " 必须是ipv4 异步版",

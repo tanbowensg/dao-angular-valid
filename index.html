@@ -18,8 +18,9 @@
             ng-model="ip" 
             dao-valid
             dao-valid-toggle="IPIsValid"
-            dao-valid-rule="notEmpty,ipv4,asyncURL,asyncipv4"
+            dao-valid-rule="notEmpty,notOption"
             dao-valid-name="IP address"
+            dao-valid-option="{text:12345}"
             placeholder="192.168.1.1" 
             autofocus>
     </div>

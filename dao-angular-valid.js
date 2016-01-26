@@ -44,7 +44,6 @@ angular.module('daodaodao',["daoValidAngular"])
       return new Promise(function(resolve, reject) {
 
         setTimeout(function() {
-
           if (urlRegex.test(str)) {
             resolve({
               valid: true,
@@ -62,6 +61,35 @@ angular.module('daodaodao',["daoValidAngular"])
       })
     }
   }
+
+  rules.notOption = {
+    msg: " cannot be 12345. (async)",
+    async: true,
+    validate: function(str, option) {
+      var that = this
+
+      return new Promise(function(resolve, reject) {
+
+        setTimeout(function() {
+          console.log("额外的参数！",option)
+          if (str!==option.text) {
+            resolve({
+              valid: true,
+              str: str
+            })
+          } else {
+            resolve({
+              valid: false,
+              msg: that.msg
+            })
+          }
+
+        })
+
+      })
+    }
+  }
+  
 
   rules.asyncipv4 = {
     msg: " 必须是ipv4 异步版",
@@ -131,13 +159,13 @@ angular.module('daodaodao',["daoValidAngular"])
       }
     }
 
-    obj.syncValidate = function(data) {
+    obj.syncValidate = function(data, option) {
       //同步的就正常运行
       for (var i = 0; i < obj.validators.length; i++) {
 
         var validator = obj.validators[i]
 
-        if (validator.validate(data.value)) {
+        if (validator.validate(data.value, option)) {
           obj.result.msg[data.key] = ""
 
         } else {
@@ -152,7 +180,7 @@ angular.module('daodaodao',["daoValidAngular"])
 
     }
 
-    obj.asyncValidate = function(data, callback) {
+    obj.asyncValidate = function(data, option, callback) {
 
       if (obj.aValidators.length === 0) {
         return
@@ -168,7 +196,7 @@ angular.module('daodaodao',["daoValidAngular"])
 
           if (i === 0) {
 
-            promise = aValidator.validate(data.value)
+            promise = aValidator.validate(data.value, option)
 
           } else {
 
@@ -176,7 +204,7 @@ angular.module('daodaodao',["daoValidAngular"])
               .then(function(res) {
 
                 if (res.valid) {
-                  return aValidator.validate(res.str)
+                  return aValidator.validate(res.str, option)
                 } else {
                   return res
                 }
@@ -210,7 +238,7 @@ angular.module('daodaodao',["daoValidAngular"])
       return obj.result
     }
 
-    obj.validate = function(data, success, fail) {
+    obj.validate = function(data, option, success, fail) {
 
       var validator, i, j
 
@@ -218,12 +246,12 @@ angular.module('daodaodao',["daoValidAngular"])
 
       obj.getValidators(data)
 
-      obj.syncValidate(data)
+      obj.syncValidate(data,option)
 
       //仅当同步验证通过时，才会继续异步验证
       if (obj.result.valid && obj.aValidators.length > 0) {
 
-        obj.asyncValidate(data, function() {
+        obj.asyncValidate(data, option, function() {
 
           if (success && obj.result.valid === true) {
             success(obj.result)
@@ -245,10 +273,6 @@ angular.module('daodaodao',["daoValidAngular"])
 
     }
 
-    obj.runCallBack = function(success, fail) {
-
-    }
-
     return obj.validate
   }
 
@@ -258,6 +282,7 @@ angular.module('daodaodao',["daoValidAngular"])
       rule: "@daoValidRule",
       value: "=ngModel",
       valid: "=daoValidToggle",
+      option: "=daoValidOption"
     },
     link: function($scope, ele) {
       var parent = ele[0].parentElement
@@ -277,7 +302,9 @@ angular.module('daodaodao',["daoValidAngular"])
           key: "key",
           value: $scope.value,
           rules: $scope.rule.split(',')
-        }, function(res) {
+        },
+        $scope.option,
+        function(res) {
 
           try {
 

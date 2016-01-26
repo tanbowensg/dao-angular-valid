@@ -35,13 +35,13 @@
       }
     }
 
-    obj.syncValidate = function(data) {
+    obj.syncValidate = function(data, option) {
       //同步的就正常运行
       for (var i = 0; i < obj.validators.length; i++) {
 
         var validator = obj.validators[i]
 
-        if (validator.validate(data.value)) {
+        if (validator.validate(data.value, option)) {
           obj.result.msg[data.key] = ""
 
         } else {
@@ -56,7 +56,7 @@
 
     }
 
-    obj.asyncValidate = function(data, callback) {
+    obj.asyncValidate = function(data, option, callback) {
 
       if (obj.aValidators.length === 0) {
         return
@@ -72,7 +72,7 @@
 
           if (i === 0) {
 
-            promise = aValidator.validate(data.value)
+            promise = aValidator.validate(data.value, option)
 
           } else {
 
@@ -80,7 +80,7 @@
               .then(function(res) {
 
                 if (res.valid) {
-                  return aValidator.validate(res.str)
+                  return aValidator.validate(res.str, option)
                 } else {
                   return res
                 }
@@ -114,7 +114,7 @@
       return obj.result
     }
 
-    obj.validate = function(data, success, fail) {
+    obj.validate = function(data, option, success, fail) {
 
       var validator, i, j
 
@@ -122,12 +122,12 @@
 
       obj.getValidators(data)
 
-      obj.syncValidate(data)
+      obj.syncValidate(data,option)
 
       //仅当同步验证通过时，才会继续异步验证
       if (obj.result.valid && obj.aValidators.length > 0) {
 
-        obj.asyncValidate(data, function() {
+        obj.asyncValidate(data, option, function() {
 
           if (success && obj.result.valid === true) {
             success(obj.result)
@@ -149,10 +149,6 @@
 
     }
 
-    obj.runCallBack = function(success, fail) {
-
-    }
-
     return obj.validate
   }
 
@@ -162,6 +158,7 @@
       rule: "@daoValidRule",
       value: "=ngModel",
       valid: "=daoValidToggle",
+      option: "=daoValidOption"
     },
     link: function($scope, ele) {
       var parent = ele[0].parentElement
@@ -181,7 +178,9 @@
           key: "key",
           value: $scope.value,
           rules: $scope.rule.split(',')
-        }, function(res) {
+        },
+        $scope.option,
+        function(res) {
 
           try {
 
